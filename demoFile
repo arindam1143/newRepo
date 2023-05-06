@@ -1,16 +1,16 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const app = express();
-require("dotenv").config();
-const LocalStorage = require('node-localstorage').LocalStorage;
+const LocalStorage = require("node-localstorage").LocalStorage;
 const session = require("express-session");
 const PORT = process.env.PORT || 8000;
 const path = require("path");
 const ejs = require("ejs");
-const localStorage = new LocalStorage('./localStorage');
+const localStorage = new LocalStorage("./localStorage");
 /**
  * Middleware
  */
+//console.log("hello");
 app.use(express.json());
 app.set("view engine", "ejs");
 app.use(cookieParser());
@@ -18,7 +18,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: false }));
 app.use(
   session({
-    secret: "!@*#$(&!#my_secret_()*$!@01293",
+    secret: "!@#$(&!#my_secret_()$!@01293",
     resave: false,
     saveUninitialized: false,
     cookie: { maxAge: 24 * 60 * 60 * 1000 },
@@ -27,22 +27,23 @@ app.use(
 
 app.get("/", (req, res) => {
   //res.render("home");
-  res.send("api call..")
+  res.send("api call..");
 });
 
+app.get("/login", (req, res) => {
+  res.render("login");
+});
 /**
  * Login
  */
-app.get("/login", (req, res) => {
-  res.send("login");
-});
+
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
-  const result=req.body
-  let user=JSON.parse(localStorage.getItem("user"));
+  const result = req.body;
+  let user = JSON.parse(localStorage.getItem("user"));
   console.log(user.username);
-  if(username == user.username && password == user.password){
-    req.session.user=result
+  if (username == user.username && password == user.password) {
+    req.session.user = result;
   }
   req.session.user = true;
   res.redirect("/dashboard");
@@ -51,13 +52,11 @@ app.post("/login", (req, res) => {
 /**
  * Register
  */
-app.get("/register", (req, res) => {
- 
-});
+
 app.post("/register", (req, res) => {
-  const data=req.body;
-  localStorage.setItem("user",JSON.stringify(data));
-  const a=localStorage.getItem("user");
+  const data = req.body;
+  localStorage.setItem("user", JSON.stringify(data));
+  const a = localStorage.getItem("user");
   console.log(JSON.parse(a));
   res.send(data);
 });
